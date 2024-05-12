@@ -2,19 +2,13 @@ from flask import Flask, request, jsonify, render_template
 import os
 import subprocess
 from flask_cors import CORS
-import uuid
 from werkzeug.exceptions import BadRequest
 import threading
 from transform import tranform_method
-
-app = Flask(__name__)
+from setup_gral_params import setup_params
 WORKING_DIR = '/'
-SCRIPT_DIR = 'script.sh'
-
-
-from flask import Flask, jsonify
-import subprocess
-
+DIR = os.path.dirname(__file__) #<-- absolute dir the script is in
+COMPUTATION_DIR = os.path.join(DIR, 'tesproj/Computation/')
 app = Flask(__name__)
 CORS(app)
 # Место для хранения статуса процесса
@@ -30,7 +24,7 @@ def stop_process(pid):
     
     if not process:
         return jsonify({'result': False})
-    
+
     try:
         process.kill()
     except KeyError as e:
@@ -51,24 +45,33 @@ def check_process(pid):
 def process_finished(pid, callback):
     process = processes_status[pid]
     process.wait()
-    print(process)
-    
-    print('перешел в process_finished')
+ 
     # Удалите информацию о процессе из словаря после завершения процесса
     processes_status.pop(pid, None)
+ 
+    rel_path = '00001-101.txt'
+ 
     # Вызовите функцию обратного вызова после завершения процесса
-    callback(pid,'C:/Users/viatkinviatkin/Desktop/release GRAL/server/tesproj/Computation/00001-101.txt')
+    callback(pid, os.path.join(COMPUTATION_DIR, rel_path))
+ 
+    process.kill()    
     
-    process.kill()
-    
-
 @app.route('/process', methods=['GET'])
 def process():
-
-    process = subprocess.Popen(['gral', 'C:/Users/viatkinviatkin/Desktop/release GRAL/server/tesproj/Computation'])
+    
+    arguments  = request.args.to_dict()
+    try: 
+        setup_params(arguments)
+    except:
+        raise BadRequest(f"Неверные параметры", jsonify({'error':'неверные параметры'}))
+    
+    process = subprocess.Popen(['gral', COMPUTATION_DIR], stdin=subprocess.PIPE)
     pid = process.pid
     processes_status[pid] = process
     
+    # Посылаем 'enter', чтобы имитировать нажатие клавиши по завершении gral process
+    process.stdin.write(b"a")
+
     # Запуск потока ожидания завершения процесса
     t = threading.Thread(target=process_finished, args=(process.pid, tranform_method))
     t.start()

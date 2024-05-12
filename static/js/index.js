@@ -4,16 +4,16 @@ init()
 
 function clickHandler() {
 	// Запуск процесса и получение PID
+	document.getElementById("loader").classList.add("active")
 	fetch('http://127.0.0.1:5000/process')
 	  .then(response => response.json())
 	  .then(data => {
 		pid = data.pid;
 		console.log(pid)
-		document.getElementById("loader").classList.add("active")
 		// Запуск опроса (polling)
 		const interval = setInterval(() => {
-			fetch(`http://127.0.0.1:5000/check-process-grall/${pid}`).then(response => response.json()).then(data => {
-				if (data.status === 'complete') {
+			fetch(`http://127.0.0.1:5000/check-process-grall/${pid}`).then(response => response.json()).then(data1 => {
+				if (data1.status === 'complete') {
 					console.log(`Процесс ${pid} завершен!`);
 					document.getElementById("loader").classList.remove("active")
 					pid = -1
@@ -24,7 +24,7 @@ function clickHandler() {
 				  console.log('Процесс НЕ завершен');
 				}
 			});
-		  }, 1000); // Опрос каждую секунду
+		  }, 2500); // Опрос каждую секунду
 	});
 }
       
