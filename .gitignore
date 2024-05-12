@@ -1,0 +1,5 @@
+*.json
+*.rar
+/__pycache__
+/.git
+/tesproj

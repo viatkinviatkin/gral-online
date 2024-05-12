@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Grall online</title>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Подключить JavaScript Semantic UI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-contour" type="text/javascript" ></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  </head>
+  <body style="margin: 0;padding: 15px; height: 100%; overflow: hidden">
+    <div class="ui six column grid">
+      <div class="row">
+        <div class="column">
+          <label for="fileInput" class="ui icon button">
+            <i class="file icon"></i>
+            Открыть файл...
+          </label>
+          <input type="file" id="fileInput" accept=".json">
+        </div>
+        <div class="column">
+          <button class="ui primary button" onclick="clickHandler()">Запустить GRAL</button>
+          <div id ="loader" class="ui inline loader"></div>
+        </div>
+        <div class="column">
+          <button class="ui button" onclick="stopHandler()">Отменить процесс</button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="mapid"></div>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>

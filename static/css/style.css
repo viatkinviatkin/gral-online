@@ -1,0 +1,14 @@
+body {
+  background-color: red;
+}
+
+#mapid {
+
+  margin-top: 15px;
+  width: 80vw;
+  height: 80vh
+}
+
+input {
+	display:none
+}
